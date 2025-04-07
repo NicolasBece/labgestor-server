@@ -11,6 +11,7 @@ type UsuarioRepository interface {
 	ObtenerUsuarioID(id string) *models.Usuario
 	CrearUsuario(usuario *models.Usuario)
 	ActualizarUsuario(usuario *models.Usuario)
+	ObtenerUsuarios() (*[]models.Usuario, error)
 }
 
 // Structura que implementa la interfaz anteriormente definida
@@ -42,4 +43,11 @@ func (repo *usuarioRepository) ActualizarUsuario(usuario *models.Usuario) {
 	repo.DB.Save(usuario)
 }
 
+func (repo *usuarioRepository) ObtenerUsuarios() (*[]models.Usuario, error) {
+	var usuarios []models.Usuario
+	if err := repo.DB.Preload("Rol").Find(&usuarios).Error; err != nil {
+		return nil, err
+	}
+	return &usuarios, nil
 
+}
